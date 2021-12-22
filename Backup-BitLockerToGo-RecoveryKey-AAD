@@ -1,0 +1,3 @@
+$RemovableDrive = gcim win32_diskdrive | ? {$_.interfacetype -eq "USB"} | % {gcim -Query "ASSOCIATORS OF {Win32_DiskDrive.DeviceID=`"$($_.DeviceID.replace('\','\\'))`"} WHERE AssocClass = Win32_DiskDriveToDiskPartition"} | % {gcim -Query "ASSOCIATORS OF {Win32_DiskPartition.DeviceID=`"$($_.DeviceID)`"} WHERE AssocClass = Win32_LogicalDiskToPartition"} | % {$_.deviceid}
+$BitLockerVolume = Get-BitLockerVolume -MountPoint $RemovableDrive 
+BackupToAAD-BitLockerKeyProtector -MountPoint $RemovableDrive -KeyProtectorId $BitLockerVolume.KeyProtector[1].KeyProtectorId
